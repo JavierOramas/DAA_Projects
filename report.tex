@@ -1,8 +1,29 @@
 \documentclass{article}
-
+\usepackage{listings}
 % Packages
 \usepackage[margin=1in]{geometry} % set margin size
+\usepackage{color}
 
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{mauve}{rgb}{0.58,0,0.82}
+
+\lstset{frame=tb,
+  language=Python,
+  aboveskip=3mm,
+  belowskip=3mm,
+  showstringspaces=false,
+  columns=flexible,
+  basicstyle={\small\ttfamily},
+  numbers=none,
+  numberstyle=\tiny\color{gray},
+  keywordstyle=\color{blue},
+  commentstyle=\color{dkgreen},
+  stringstyle=\color{mauve},
+  breaklines=true,
+  breakatwhitespace=true,
+  tabsize=3
+}
 % Title and author information
 \title{Primer Proyecto de DAA: Procrastinación++}
 \author{
@@ -32,9 +53,35 @@ Una vez se retorna, se elimina el caracter insertado al inicio de la cadena y se
 
 La correctitud de este algoritmo se infiere de la definición del problema, dado que está simulando lo descrito el enunciado.
 
-La complejidad de estee algorirtmo es $O(2^|S|)$ por cada caracter de S se revisatodo el árbol derivado de colocarlo al principio y luego al final.
+La complejidad de estee algorirtmo es $O(2^{|S|})$ por cada caracter de S se revisa todo el árbol derivado de colocarlo al principio y luego al final.
 
-\section{Enfoque ??}
+\subsection{Enfoque $O(|S|^2)$}
+Para esta solución creamos una matriz dp de tamaño $SxS$ donde
+donde dp[i][j] representa la cantidad de soluciones que aportaría el caracter i
+tomando un total de j caracteres.
+
+Inicializamos esa matriz de la siguiente manera,
+iterando por cada uno de los caracteres de S,
+Si $T[i] == S[0]$ o si $i > len(T)$ tomar el caracter i con un 
+total de i caracteres aportaría una solución al total, esto es dp[i][i] = 1
+
+Luego, iterando por cada uno de los caracteres de S,
+se fijarán progresivamente una cantidad k (de 0 a |S|) de caracteres
+para cada uno de los restantes caracteres:
+
+si la cantidad de caracteres fijados es mayor que len(S) ya deberá estar la cadena contenida, por tanto se 
+considera que fijar el caracter k aportaría todas las soluciones que lo contengan más las soluciones que fijan un caracter más en la solución
+de igual forma, si k es menor que len(T) pero T[k] == S[i] se añaden las soluciones que resultan de fijar k+1 caracteres.
+
+Si se toma una cantidad de caracteres con un tamaño mayor o igual que len(T) o S[i] == T[j] se tendrán además la cantidad de soluciones que tome j-1 caracteres de j con k caracteres fijados
+
+Haciendo el proceso anterior se condensa en la posición dp[0][len(S)-1] la cantidad de cadenas diferentes que se pueden formar con T como prefijo con el procedimiento descrito.
+
+Esta solucion itera por los caracteres de S; y por cada uno de estos recorre nuevamente los caracteres de S desde la posición en donde se encuentra hasta el final, esto tendrá una complejidad
+de $O(|S| * \sum_1^{|S|})$ que es acotado superiormente por $O(|S|^2)$
+
+
+\section{Enfoque $O(|T|*|S|)$}
 Para pasar a explicar este enfoque es necesario realizar primero unas observaciones.
 
 Existen solo dos formas de generar la cadena:
@@ -73,9 +120,24 @@ En caso de que si sea el caracter deseado, se suma la cuenta actual más la cant
 
 En este caso por cada caracter de T se recorre toda la cadena S, dejando una complejidad de $O(|T||S|)$
 
-\section{Results}
+\section{running}
 
-\section{Conclusion}
+Para correr el archivo, se puede ejecutar:
 
+\texttt{python n\_squared.py}
+
+para utilizarlo como un módulo:
+
+\begin{lstlisting}
+    from n_squared import solver
+    # se definen las variables S y T
+    sol = solver(S,T)
+\end{lstlisting}
+
+\section{Testing}
+Para el testing de esta implementación se utilizó la biblioteca pytest (necesario instalarla para correr los tests)
+
+Desde la raíz del proyecto correr:
+\texttt{python -m pytest}
 
 \end{document}
